@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/page/appbar_custom.dart';
 import 'package:flutter_application_2/page/nextpage.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,13 +16,47 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      onGenerateRoute: (RouteSettings settings) {
+        switch (settings.name) {
+          case '/':
+            return SlideRightRoute(widget:appbarcustom());
+            break;
+          case '/second':
+            return SlideRightRoute(widget:SecondPage());
+            break;
+          case '/third':
+            return SlideRightRoute(widget:ThirdPage());
+            break;  
+        }
+  },
+     
     );
+     
   }
+}
+
+class SlideRightRoute extends PageRouteBuilder {
+  final Widget widget;
+  SlideRightRoute({required this.widget})
+      : super(
+    pageBuilder: (BuildContext context, Animation<double> animation,
+        Animation<double> secondaryAnimation) {
+      return widget;
+    },
+    transitionsBuilder: (BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        Widget child) {
+      return new SlideTransition(
+        position: new Tween<Offset>(
+          begin: const Offset(1.0, 0.0),
+          end: Offset.zero,
+        ).animate(animation),
+        child: child,
+      );
+    },
+  );
 }
 
 class MyHomePage extends StatefulWidget {
@@ -38,17 +73,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int index = 1;
+  int index = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: bottom_builder(),
-      body: build_Pages()
-      ,
+      body: build_Pages(),
     );
   }
 
+  // ignore: non_constant_identifier_names
   Widget bottom_builder() {
     return BottomNavigationBar(
         currentIndex: index,
@@ -68,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // ignore: non_constant_identifier_names
+  @override
   Widget build_Pages() {
     switch (index) {
       case 0:
